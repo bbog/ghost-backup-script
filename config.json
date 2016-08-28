@@ -1,0 +1,15 @@
+
+{
+	"settings": {
+		"output_path": "output",
+		"max_backup_files": 5
+	},
+	"blogs": [
+		{
+			"url": "http://blog.domain/",
+			"client_secret": "client_secret",
+			"username": "admin_username",
+			"password": "admin_password"
+		}
+	]
+}
