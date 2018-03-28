@@ -1,4 +1,3 @@
-
 import re
 import os
 import json
@@ -42,6 +41,9 @@ def getConfig (config_file_path):
 # this is not one of those cases where using them is very bad
 def setGlobalConfigData (config_data):
 
+	global OUTPUT_PATH
+	global MAX_BACKUP_FILES
+
 	settings = config_data['settings']
 	if settings:
 		if 'output_path' in settings:
@@ -51,6 +53,9 @@ def setGlobalConfigData (config_data):
 
 
 def backupBlog (blog_data):
+	
+	global MAX_BACKUP_FILES
+
 	# the backup process involves getting an access token
 	# and then passing it via GET to the backup URL request
 	with requests.Session() as blog_session:
@@ -71,6 +76,8 @@ def backupBlog (blog_data):
 
 def getAccessToken (blog_data, blog_session):
 
+	global TOKEN_URL_PATH
+	
 	payload = composePayload(blog_data)
 	token_api_url = blog_data['url'] + TOKEN_URL_PATH
 
@@ -105,6 +112,8 @@ def composePayload (blog_data):
 
 def getBackupData (blog_data, access_token, blog_session):
 
+	global BACKUP_URL_PATH
+
 	backup_url = blog_data['url'] + BACKUP_URL_PATH + access_token
 	response = blog_session.get(backup_url)
 
@@ -118,6 +127,8 @@ def getBackupData (blog_data, access_token, blog_session):
 
 
 def createBackupFolder (blog_data):
+
+	global OUTPUT_PATH
 
 	if not os.path.exists(OUTPUT_PATH):
 		os.mkdir(OUTPUT_PATH)
@@ -140,6 +151,9 @@ def saveBackupData (backup_data, blog_data):
 # in this folder the backup json file is saved
 # we need this address for other purposes so there is a method to conveniently get it
 def composeBlogBackupFolderPath (blog_data):
+	
+	global OUTPUT_PATH
+
 	blog_name = getBlogNameFromURL(blog_data['url'])
 	blog_folder_path = OUTPUT_PATH + '/' + blog_name
 	return blog_folder_path
@@ -167,6 +181,9 @@ def getBlogNameFromURL (blog_url):
 
 
 def removeOlderBackups (blog_data):
+	
+	global MAX_BACKUP_FILES
+
 	blog_folder_path = composeBlogBackupFolderPath(blog_data)
 	backup_files = os.listdir(blog_folder_path)
 	# sort them by date
@@ -184,7 +201,7 @@ def main ():
 
 
 if __name__ == "__main__":
-    main()
+	main()
 
 
 
